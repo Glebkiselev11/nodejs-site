@@ -82,7 +82,6 @@ app.post("/login", urlencodedParser, async (req, res) => {
       message: 'Такого пользователя не существует =( совсем'
     })
   }
-  
 })
 
 app.get('/personalarea', urlencodedParser, async (req, res) => {
