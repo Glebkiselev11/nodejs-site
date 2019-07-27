@@ -79,7 +79,7 @@ app.post("/login", urlencodedParser, async (req, res) => {
       title: 'Login',
       date: () => Date(),
       activeNavLogin: true,
-      message: 'Такого пользователя не существует'
+      message: 'Такого пользователя не существует :('
     })
   }
   
