@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <div class="home-wrap">
+        <li class="nav-item{{#if activeNavIndex}} active {{/if}}">
+          <a class="nav-link" href="/">Главная <span class="sr-only"></span></a>
+        </li>
+        
+      </div>
+      {{#if firstname}}
+      <li>Добро пожаловать {{firstname}} {{secondname}}</li>
+      {{/if}} 
+      {{#if firstname}}
+      <div class="aut-wrap">
+        <li class="nav-item">
+          <a href="/personalarea" class="nav-link">личный кабинет</a>
+        </li>
+        
+        <li> 
+        <form action="/logout" method="get">
+          <input type="submit" value="Выйти">
+        </form>
+        </li>
+
+      </div>
+      {{else}}
+      <div class="aut-wrap">
+        <li class="nav-item {{#if activeNavReg}} active {{/if}}">
+          <a class="nav-link" href="/register">Зарегестрироваться</a>
+        </li>
+        <li class="nav-item {{#if activeNavLogin}} active {{/if}}">
+          <a class="nav-link" href="/login">Войти</a>
+        </li>
+      </div>
+      {{/if}}
+      
+    </ul>
+  </div>
+</nav>

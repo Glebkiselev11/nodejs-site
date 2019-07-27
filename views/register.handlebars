@@ -1,0 +1,23 @@
+{{> navbar}}
+<main class="container main-wrap">
+    <h1>Регистрация</h1>
+    <form method="post" action="/register">
+        <div class="form-group">
+            <label for="firsname">Firstname</label>
+            <input type="text" class="form-control" id="firsname" aria-describedby="emailHelp" placeholder="Enter Firsname" name="firstname">
+        </div>
+        <div class="form-group">
+            <label for="secondname">Secondname</label>
+            <input type="text" class="form-control" id="secondname" placeholder="Enter Secondname" name="secondname">
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {{!-- <br> <br>
+    <p><b>   Уже зарегестрированные пользователи:</b> </p>
+    <ul>
+        {{#each users as |user|}}
+         <li> {{user.first_name }} - {{user.second_name }}</li>
+        {{/each}}
+
+    </ul> --}}
+</main>

@@ -1,0 +1,14 @@
+<body>
+    {{> navbar}}
+<main class="container main-wrap">
+    <h1>Админ панель</h1>
+    <p><b>Пользователи сайта</b> </p>
+    <ul>
+        {{#each users as |user|}}
+         <li> {{user.first_name }} - {{user.second_name }}</li>
+        {{/each}}
+
+    </ul>
+    
+</main><!-- /.container -->
+</body>
