@@ -12,10 +12,10 @@
       <li class="nav-item">Добро пожаловать {{firstname}} {{secondname}}</li>
       <div class="aut-wrap">
         <li class="nav-item">
-          <a href="/add-post" class="nav-link">добавить пост</a>
+          <a href="/add-post" class="nav-link {{#if activeNavAddPost}} active {{/if}}">добавить пост</a>
         </li>
         <li class="nav-item">
-          <a href="/personalarea" class="nav-link">личный кабинет</a>
+          <a href="/personalarea" class="nav-link {{#if activeNavPers}} active {{/if}}">личный кабинет</a>
         </li>
         
         <li> 

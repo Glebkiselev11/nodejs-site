@@ -22,12 +22,25 @@ module.exports.setUsers = async function setUsers (first_name, role, second_name
     }
 }
 
-module.exports.setPost = async function setUsers (title, post_text, author) {
+module.exports.setPost = async function setPost (title, post_text, author) {
   try {
     await pool.query(`Insert into posts (title, post_text, author) values('${title}', '${post_text}', '${author}')`)
     } catch (e) {
       console.log(`Error in setUsers(): ${e}`);
     }
+}
+
+module.exports.getPosts = async function getPosts() {
+  try {
+  const result = await pool.query(`select * from posts`)
+    if (result.rowCount) {
+      return result.rows;
+    }
+
+  } catch (e) {
+    console.log(`Error in getPosts(): ${e}`);
+  }
+  return [];
 }
 
 

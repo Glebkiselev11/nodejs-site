@@ -32,14 +32,16 @@ app.set('view engine', 'handlebars');
 
 // Routing
 app.get('/', urlencodedParser, async (req, res) => {
-  
+  const posts = await queryDb.getPosts();
+  posts.reverse()
   res.render('index', {
     title: 'Home page',
     activeNavIndex: true,
     logIn: true,
     firstname: req.session.firstName,
     secondname: req.session.secondName,
-    role: req.session.loginStatus
+    role: req.session.loginStatus,
+    posts
     
   });
 });
@@ -87,7 +89,8 @@ app.get('/add-post', urlencodedParser, async (req, res) => {
     bootstrap: true,
     firstname: req.session.firstName,
     secondname: req.session.secondName,
-    role: req.session.loginStatus
+    role: req.session.loginStatus,
+    activeNavAddPost: true
   })
 })
 
@@ -95,6 +98,7 @@ app.get('/personalarea', urlencodedParser, async (req, res) => {
   res.render('personalarea', {
     title: 'Personal area',
     bootstrap: true,
+    activeNavPers: true,
     firstname: req.session.firstName,
     secondname: req.session.secondName,
     role: req.session.loginStatus

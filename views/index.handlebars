@@ -1,7 +1,18 @@
 <body>
     {{> navbar}}
 <main class="container main-wrap">
-    <h1>Главная страница</h1>
+    
+    <div class="col-md-12 blog-main">
+        {{#each posts as |post|}}
+         <div class="blog-post">  
+             <h2>{{post.title }}</h2>
+             <p>{{post.post_text}}</p>
+             <small>author: {{post.author}}</small>
+         </div>
+         <hr>
+        {{/each}}
+    </div>
+    
     
 </main><!-- /.container -->
 </body>
