@@ -10,6 +10,10 @@
     margin: auto;
 }
 
+li {
+    color: white;
+}
+
 .aut-wrap {
     display: flex;
     justify-content: center;
