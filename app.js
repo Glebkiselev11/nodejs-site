@@ -82,11 +82,6 @@ app.post("/login", urlencodedParser, async (req, res) => {
       message: 'Такого пользователя не существует =( совсем'
     })
   }
-<<<<<<< HEAD
- 
-=======
-  
->>>>>>> f
 })
 
 
