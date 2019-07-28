@@ -35,7 +35,6 @@ app.get('/', urlencodedParser, async (req, res) => {
   
   res.render('index', {
     title: 'Home page',
-    date: () => Date(),
     activeNavIndex: true,
     logIn: true,
     firstname: req.session.firstName,
@@ -50,7 +49,6 @@ app.get('/', urlencodedParser, async (req, res) => {
 app.get('/login', (req, res) => {
   res.render('login', {
     title: 'Login',
-    date: () => Date(),
     activeNavLogin: true,
     message: ''
     
@@ -77,18 +75,26 @@ app.post("/login", urlencodedParser, async (req, res) => {
   } else {
     res.render('login' , {
       title: 'Login',
-      date: () => Date(),
       activeNavLogin: true,
       message: 'Такого пользователя не существует =( совсем'
     })
   }
 })
 
+app.get('/add-post', urlencodedParser, async (req, res) => {
+  res.render('add-post', {
+    title: 'Add post',
+    bootstrap: true,
+    firstname: req.session.firstName,
+    secondname: req.session.secondName,
+    role: req.session.loginStatus
+  })
+})
+
 app.get('/personalarea', urlencodedParser, async (req, res) => {
   res.render('personalarea', {
     title: 'Personal area',
     bootstrap: true,
-    date: () => Date(),
     firstname: req.session.firstName,
     secondname: req.session.secondName,
     role: req.session.loginStatus
@@ -99,7 +105,6 @@ app.get('/register', urlencodedParser, async (req, res) => {
   res.render('register', {
     title: 'register',
     bootstrap: true,
-    date: () => Date(),
     users: await queryDb.getUsers(),
     activeNavReg: true
 })
@@ -111,6 +116,22 @@ app.post("/register", urlencodedParser, async (req, res) => {
     res.render('regist-success')
     await queryDb.setUsers(firstname, 'user', secondname);
 });
+
+// add posts
+
+app.post('/createpost', urlencodedParser, async (req, res) => {
+  if(!req.body) return res.sendStatus(400);
+  const {title, post_text} = req.body;
+  await queryDb.setPost(title, post_text, `${req.session.firstName} ${req.session.secondName}`);
+  res.render('post-success', {
+    title: 'Personal area',
+    bootstrap: true,
+    firstname: req.session.firstName,
+    secondname: req.session.secondName,
+    role: req.session.loginStatus
+
+  })
+})
 
 app.get('/logout', urlencodedParser, async (req, res) => {
   if(req.session) {

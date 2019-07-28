@@ -22,6 +22,15 @@ module.exports.setUsers = async function setUsers (first_name, role, second_name
     }
 }
 
+module.exports.setPost = async function setUsers (title, post_text, author) {
+  try {
+    await pool.query(`Insert into posts (title, post_text, author) values('${title}', '${post_text}', '${author}')`)
+    } catch (e) {
+      console.log(`Error in setUsers(): ${e}`);
+    }
+}
+
+
 module.exports.login = async function login (first_name, second_name) {
   try {
   const result = await pool.query(`SELECT * from users where first_name = '${first_name}' AND second_name = '${second_name}'`)
