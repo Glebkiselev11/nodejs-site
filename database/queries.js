@@ -13,6 +13,8 @@ module.exports.getUsers = async function getUsers() {
   return [];
 }
 
+
+
 module.exports.setUsers = async function setUsers (first_name, role, second_name, email, pass) {
   try {
     await pool.query(`Insert into users (first_name, role, second_name, email, password) values('${first_name}', '${role}', '${second_name}', '${email}', '${pass}') `)
@@ -20,6 +22,8 @@ module.exports.setUsers = async function setUsers (first_name, role, second_name
       console.log(`Error in setUsers(): ${e}`);
     }
 }
+
+
 
 module.exports.setPost = async function setPost (title, post_text, author) {
   try {

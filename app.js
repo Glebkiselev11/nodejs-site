@@ -80,13 +80,17 @@ app.post("/login", urlencodedParser, async (req, res) => {
     req.session.firstName = loginStatus.first_name;
     req.session.secondName = loginStatus.second_name;
     req.session.loginStatus = loginStatus.role;
+    req.session.id_user = loginStatus.id;
+    req.session.email = loginStatus.email;
     res.redirect('/admin')
   } else if (loginStatus.role === 'Guest' || loginStatus.role === 'user') {
     req.session.firstName = loginStatus.first_name;
     req.session.secondName = loginStatus.second_name;
     req.session.loginStatus = loginStatus.role;
-
-    res.redirect('/personalarea');
+    req.session.id_user = loginStatus.id;
+    req.session.email = loginStatus.email;
+ 
+    res.redirect('/user');
   } else {
     res.render('login' , {
       title: 'Login',
@@ -94,6 +98,20 @@ app.post("/login", urlencodedParser, async (req, res) => {
       message: 'Такого пользователя не существует'
     })
   }
+})
+
+app.get('/user', urlencodedParser, async (req, res) => {
+  res.render('user', {
+    title: 'Personal area',
+    bootstrap: true,
+    activeNavPers: true,
+    firstname: req.session.firstName,
+    secondname: req.session.secondName,
+    email: req.session.email,
+    role: req.session.loginStatus,
+    id_user: req.session.id_user,
+    admin: isAdmin(req.session.loginStatus)
+  })
 })
 
 
@@ -179,17 +197,7 @@ app.get('/add-post', urlencodedParser, async (req, res) => {
   })
 })
 
-app.get('/personalarea', urlencodedParser, async (req, res) => {
-  res.render('personalarea', {
-    title: 'Personal area',
-    bootstrap: true,
-    activeNavPers: true,
-    firstname: req.session.firstName,
-    secondname: req.session.secondName,
-    role: req.session.loginStatus,
-    admin: isAdmin(req.session.loginStatus)
-  })
-})
+
 
 app.get('/register', urlencodedParser, async (req, res) => {
   res.render('register', {
