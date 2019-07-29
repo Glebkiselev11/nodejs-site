@@ -27,6 +27,15 @@ app.engine('handlebars', exphbs());
 app.set('view engine', 'handlebars');
 
 
+// Провека является ли пользователь админом, чтобы добавлять админ элементы 
+function isAdmin (status) {
+  if (status === 'admin') {
+    return true
+  } 
+  return false  
+}
+
+
 
 
 
@@ -41,7 +50,8 @@ app.get('/', urlencodedParser, async (req, res) => {
     firstname: req.session.firstName,
     secondname: req.session.secondName,
     role: req.session.loginStatus,
-    posts
+    posts,
+    admin: isAdmin(req.session.loginStatus)
     
   });
 });
@@ -67,7 +77,10 @@ app.post("/login", urlencodedParser, async (req, res) => {
   const loginStatus = await queryDb.login(email, pass);
   
   if (loginStatus.role === 'admin') {
-    res.send(await queryDb.getUsers());
+    req.session.firstName = loginStatus.first_name;
+    req.session.secondName = loginStatus.second_name;
+    req.session.loginStatus = loginStatus.role;
+    res.redirect('/admin')
   } else if (loginStatus.role === 'Guest' || loginStatus.role === 'user') {
     req.session.firstName = loginStatus.first_name;
     req.session.secondName = loginStatus.second_name;
@@ -83,6 +96,28 @@ app.post("/login", urlencodedParser, async (req, res) => {
   }
 })
 
+
+
+app.get('/admin', urlencodedParser, async (req, res) => {
+  if(req.session.loginStatus === 'admin') {
+    const usersList = await queryDb.getUsers();
+    
+    res.render('adminpage', {
+      title: 'Admin panel',
+      users: usersList,
+      bootstrap: true,
+      activeNavAdmin: true,
+      firstname: req.session.firstName,
+      secondname: req.session.secondName,
+      role: req.session.loginStatus,
+      admin: isAdmin(req.session.loginStatus)
+    })
+        
+  } else {
+    res.redirect('/')
+  }
+})
+
 app.get('/add-post', urlencodedParser, async (req, res) => {
   res.render('add-post', {
     title: 'Add post',
@@ -90,7 +125,8 @@ app.get('/add-post', urlencodedParser, async (req, res) => {
     firstname: req.session.firstName,
     secondname: req.session.secondName,
     role: req.session.loginStatus,
-    activeNavAddPost: true
+    activeNavAddPost: true,
+    admin: isAdmin(req.session.loginStatus)
   })
 })
 
@@ -101,7 +137,8 @@ app.get('/personalarea', urlencodedParser, async (req, res) => {
     activeNavPers: true,
     firstname: req.session.firstName,
     secondname: req.session.secondName,
-    role: req.session.loginStatus
+    role: req.session.loginStatus,
+    admin: isAdmin(req.session.loginStatus)
   })
 })
 
@@ -132,9 +169,11 @@ app.post('/createpost', urlencodedParser, async (req, res) => {
     bootstrap: true,
     firstname: req.session.firstName,
     secondname: req.session.secondName,
-    role: req.session.loginStatus
+    role: req.session.loginStatus,
+    admin: isAdmin(req.session.loginStatus)
 
   })
+  
 })
 
 app.get('/logout', urlencodedParser, async (req, res) => {

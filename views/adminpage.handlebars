@@ -5,7 +5,7 @@
     <p><b>Пользователи сайта</b> </p>
     <ul>
         {{#each users as |user|}}
-         <li> {{user.first_name }} - {{user.second_name }}</li>
+         <li class="users-list__item">Имя: {{user.first_name }} | Фамилия: {{user.second_name }} | Email: {{user.email}} | Role: {{user.role}} | Id: {{user.id}} </li>
         {{/each}}
 
     </ul>

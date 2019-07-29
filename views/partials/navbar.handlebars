@@ -12,17 +12,22 @@
       <li class="nav-item">Добро пожаловать {{firstname}} {{secondname}}</li>
       <div class="aut-wrap">
         <li class="nav-item">
-          <a href="/add-post" class="nav-link {{#if activeNavAddPost}} active {{/if}}">добавить пост</a>
+          <a href="/add-post" class="nav-link {{#if activeNavAddPost}} active {{/if}}">Добавить пост</a>
         </li>
         <li class="nav-item">
-          <a href="/personalarea" class="nav-link {{#if activeNavPers}} active {{/if}}">личный кабинет</a>
+          <a href="/personalarea" class="nav-link {{#if activeNavPers}} active {{/if}}">Личный кабинет</a>
         </li>
-        
+        {{#if admin}}
+        <li class="nav-item">
+          <a href="/admin" class="nav-link {{#if activeNavAdmin}} active {{/if}}">Админ панель</a>
+        </li>
+        {{/if}}
         <li> 
         <form action="/logout" method="get">
           <input type="submit" value="Выйти">
         </form>
         </li>
+
 
       </div>
       {{else}}

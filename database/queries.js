@@ -2,7 +2,6 @@ const pool = require('./dbConnection');
 
 module.exports.getUsers = async function getUsers() {
   try {
-  //  const result = await pool.query(`select * from users where first_name = ${name}`)
   const result = await pool.query(`select * from users`)
     if (result.rowCount) {
       return result.rows;
