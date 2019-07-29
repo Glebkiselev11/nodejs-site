@@ -3,7 +3,29 @@
 <main class="container main-wrap">
     <h1>Админ панель</h1>
     <span> <b>    Команды:</b> </span><br>
-    <a href="/admin/generate-random-users" title="Сгенерировать 10 пользователей">Сгенерировать 10 пользователей</a>
+    <a href="/admin/generate-random-users" title="Сгенерировать 10 пользователей">Сгенерировать 10 пользователей</a><br><br>
+    <form action="/admin/getuser">
+        <input type="num" placeholder="user id" name="id_user">
+        <input type="submit" value="Найти пользоваталея">
+    </form>
+    <br>
+    <form action="/admin/deleteuser">
+        <input type="num" placeholder="user id" name="id_user">
+        <input type="submit" value="Удалить пользоваталея">
+    </form>
+    <br>
+    <div class="admin-form-wrap">
+        <span>Изменить данные для пользователя с id:</span>
+        <form action="/admin/update" method="get">
+        <input type="num" name="id_user" placeholder="user id"><br>
+        <input type="email" name="email" placeholder="new email"><br>
+        <input type="text" name="firstname" placeholder="new first name"><br>
+        <input type="text" name="secondname" placeholder="new second name"><br>
+        <input type="text" name="pass" placeholder="new pass"><br>
+        <input type="submit" value="Внести новые данные">
+    </form>
+    </div>
+    
 
     <br><br>
     <p><b>Пользователи сайта</b> </p>

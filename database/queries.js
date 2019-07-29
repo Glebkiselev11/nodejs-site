@@ -62,6 +62,8 @@ module.exports.login = async function login (email, pass) {
 }
 
 
+// admin запросы
+
 module.exports.setRandomUsers = async function setRandomUsers () {
   const first_names = ['gleb', 'ivan', 'evgeniy', 'misha', 'oleg', 'john', 'sam', 'ilya', 'alex', 'dima', 'mike', 'garret', 'mark', 'dennis', 'dan', 'harry', 'danila', 'adam', 'vladimir', 'vova'];
   const second_names = ['kiselev', 'makeev', 'ivanov', 'grigoriev', 'jons', 'doe', 'webb', 'enerson', 'grey', 'black', 'white', 'geyts', 'potter', 'kovalenko', 'durov', 'putin'];
@@ -73,12 +75,60 @@ module.exports.setRandomUsers = async function setRandomUsers () {
 
 
     try {
-      await pool.query(`Insert into users (first_name, role, second_name, email, password) values('${first_names[first_name]}', 'user', '${second_names[second_name]}', '${second_names[second_name]}@example.com', '${first_names[first_name]}${second_names[second_name]}') `)
+      await pool.query(`Insert into users (first_name, role, second_name, email, password) values('${first_names[first_name]}', 'user', '${second_names[second_name]}', '${first_names[first_name]}${second_names[second_name]}@example.com', '${first_names[first_name]}${second_names[second_name]}') `)
      } catch (e) {
          console.log(`Error in set10RandomUsers(): ${e}`);
      }
   }
+}
 
+module.exports.getUserById = async function getUserById(id) {
+  try {
+  const result = await pool.query(`select * from users where id = ${id}`)
+    if (result.rowCount) {
+      return result.rows;
+    }
 
+  } catch (e) {
+    console.log(`Error in getUsers(): ${e}`);
+  }
+  return [];
+}
+
+module.exports.delUserById = async function delUserById (id) {
+  try {
+    const result = await pool.query(`delete from users where id = ${id}`)
+      if (result.rowCount) {
+        return result.rows;
+      }
   
+    } catch (e) {
+      console.log(`Error in delUserById(): ${e}`);
+    }
+    return [];
+}
+
+
+module.exports.updateUserById = async function updateUserById (id_user, first_name, second_name, email, pass) {
+  try {
+    if (first_name) {
+      await pool.query(`Update users set first_name = '${first_name}' where id = ${id_user}`)
+    }
+    if (second_name) {
+      await pool.query(`Update users set second_name = '${second_name}' where id = ${id_user}`)
+    }
+
+    if (email) {
+      await pool.query(`Update users set email = '${email}' where id = ${id_user}`)
+    }
+    
+    if (pass) {
+      await pool.query(`Update users set password = '${pass}' where id = ${id_user}`)
+    }
+
+  } catch (e) {
+    console.log(`Error in updateUsersById(): ${e}`);
+  }
+
+  return []
 }

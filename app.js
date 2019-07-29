@@ -118,6 +118,8 @@ app.get('/admin', urlencodedParser, async (req, res) => {
   }
 })
 
+
+// Генерация 10 рандомных пользователей
 app.get('/admin/generate-random-users', urlencodedParser, async (req, res) => {
 
   if(req.session.loginStatus === 'admin') {
@@ -125,9 +127,45 @@ app.get('/admin/generate-random-users', urlencodedParser, async (req, res) => {
     res.redirect('/admin');
   } else {
     res.redirect('/')
-  }
-  
+  } 
 })
+
+// Поиск пользователя по id
+
+app.get('/admin/getuser', urlencodedParser, async (req, res) => {
+
+  if(req.session.loginStatus === 'admin') {
+    const query = await queryDb.getUserById(req.query.id_user);
+    res.send(query);
+  } else {
+    res.redirect('/');
+  } 
+})
+
+
+// Удаления пользователя по id
+app.get('/admin/deleteuser', urlencodedParser, async (req, res) => {
+
+  if(req.session.loginStatus === 'admin') {
+    await queryDb.delUserById(req.query.id_user);
+    res.redirect('/admin')
+  } else {
+    res.redirect('/');
+  } 
+})
+
+// Изменения данных для пользователя
+
+app.get('/admin/update', urlencodedParser, async (req, res) => {
+  if(req.session.loginStatus == 'admin') {
+    const {firstname, secondname, email, pass, id_user} = req.query;
+    await queryDb.updateUserById(id_user, firstname, secondname, email, pass);
+    res.redirect('/admin')
+  } else {
+    res.redirect('/')
+  }
+})
+
 
 app.get('/add-post', urlencodedParser, async (req, res) => {
   res.render('add-post', {
