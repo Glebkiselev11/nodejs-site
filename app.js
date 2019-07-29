@@ -4,6 +4,8 @@ const bodyParser = require("body-parser")
 const session = require("express-session")
 const queryDb = require('./database/queries')
 
+const routes = require('./routes');
+
 
 const urlencodedParser = bodyParser.urlencoded({extended: false})
 const app = express()
@@ -21,228 +23,39 @@ app.use(session({
    }
 }))
 
+app.engine('handlebars', exphbs())
+app.set('view engine', 'handlebars')
+
+// Главная странца
+app.get('/', routes.getIndexPage);
+
+app.get('/register', routes.getRegisterPage)
+app.post("/register", routes.register);
+app.get('/login', routes.getLoginPage)
+app.post("/login", routes.login)
+
+// Генерация страницы пользователя
+app.get('/user', routes.user)
 
 
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
-
-
-// Провека является ли пользователь админом, чтобы добавлять админ элементы 
-function isAdmin (status) {
-  if (status === 'admin') {
-    return true
-  } 
-  return false  
-}
-
-
-
-
-
-// Routing
-app.get('/', urlencodedParser, async (req, res) => {
-  const posts = await queryDb.getPosts();
-  posts.reverse()
-  res.render('index', {
-    title: 'Home page',
-    activeNavIndex: true,
-    logIn: true,
-    firstname: req.session.firstName,
-    secondname: req.session.secondName,
-    role: req.session.loginStatus,
-    posts,
-    admin: isAdmin(req.session.loginStatus)
-    
-  });
-});
-
-
-// Логин
-app.get('/login', (req, res) => {
-  res.render('login', {
-    title: 'Login',
-    activeNavLogin: true,
-    message: ''
-    
-  });
-});
-
-app.post("/login", urlencodedParser, async (req, res) => {
-  if(!req.body) return res.sendStatus(400);
-
-  const email = req.body.email;
-  const pass = req.body.pass;
-  
-  // Проверка в базе данных на существование данного пользователя
-  const loginStatus = await queryDb.login(email, pass);
-  
-  if (loginStatus.role === 'admin') {
-    req.session.firstName = loginStatus.first_name;
-    req.session.secondName = loginStatus.second_name;
-    req.session.loginStatus = loginStatus.role;
-    req.session.id_user = loginStatus.id;
-    req.session.email = loginStatus.email;
-    res.redirect('/admin')
-  } else if (loginStatus.role === 'Guest' || loginStatus.role === 'user') {
-    req.session.firstName = loginStatus.first_name;
-    req.session.secondName = loginStatus.second_name;
-    req.session.loginStatus = loginStatus.role;
-    req.session.id_user = loginStatus.id;
-    req.session.email = loginStatus.email;
- 
-    res.redirect('/user');
-  } else {
-    res.render('login' , {
-      title: 'Login',
-      activeNavLogin: true,
-      message: 'Такого пользователя не существует'
-    })
-  }
-})
-
-app.get('/user', urlencodedParser, async (req, res) => {
-  res.render('user', {
-    title: 'Personal area',
-    bootstrap: true,
-    activeNavPers: true,
-    firstname: req.session.firstName,
-    secondname: req.session.secondName,
-    email: req.session.email,
-    role: req.session.loginStatus,
-    id_user: req.session.id_user,
-    admin: isAdmin(req.session.loginStatus)
-  })
-})
-
-
-
-app.get('/admin', urlencodedParser, async (req, res) => {
-  if(req.session.loginStatus === 'admin') {
-    const usersList = await queryDb.getUsers();
-    
-    res.render('adminpage', {
-      title: 'Admin panel',
-      users: usersList,
-      bootstrap: true,
-      activeNavAdmin: true,
-      firstname: req.session.firstName,
-      secondname: req.session.secondName,
-      role: req.session.loginStatus,
-      admin: isAdmin(req.session.loginStatus)
-    })
-        
-  } else {
-    res.redirect('/')
-  }
-})
-
-
+// Админка
+app.get('/admin', routes.admin)
 // Генерация 10 рандомных пользователей
-app.get('/admin/generate-random-users', urlencodedParser, async (req, res) => {
-
-  if(req.session.loginStatus === 'admin') {
-    await queryDb.setRandomUsers();
-    res.redirect('/admin');
-  } else {
-    res.redirect('/')
-  } 
-})
-
+app.get('/admin/generate-random-users', routes.adminGenerateUsers)
 // Поиск пользователя по id
-
-app.get('/admin/getuser', urlencodedParser, async (req, res) => {
-
-  if(req.session.loginStatus === 'admin') {
-    const query = await queryDb.getUserById(req.query.id_user);
-    res.send(query);
-  } else {
-    res.redirect('/');
-  } 
-})
-
-
+app.get('/admin/getuser', routes.adminSerchUserById)
 // Удаления пользователя по id
-app.get('/admin/deleteuser', urlencodedParser, async (req, res) => {
-
-  if(req.session.loginStatus === 'admin') {
-    await queryDb.delUserById(req.query.id_user);
-    res.redirect('/admin')
-  } else {
-    res.redirect('/');
-  } 
-})
-
+app.get('/admin/deleteuser', routes.adminDelUserById)
 // Изменения данных для пользователя
-
-app.get('/admin/update', urlencodedParser, async (req, res) => {
-  if(req.session.loginStatus == 'admin') {
-    const {firstname, secondname, email, pass, id_user} = req.query;
-    await queryDb.updateUserById(id_user, firstname, secondname, email, pass);
-    res.redirect('/admin')
-  } else {
-    res.redirect('/')
-  }
-})
+app.get('/admin/update', routes.adminUpdateUserById)
 
 
-app.get('/add-post', urlencodedParser, async (req, res) => {
-  res.render('add-post', {
-    title: 'Add post',
-    bootstrap: true,
-    firstname: req.session.firstName,
-    secondname: req.session.secondName,
-    role: req.session.loginStatus,
-    activeNavAddPost: true,
-    admin: isAdmin(req.session.loginStatus)
-  })
-})
+app.get('/add-post', routes.addPost)
+app.post('/createpost', routes.createPost)
 
 
 
-app.get('/register', urlencodedParser, async (req, res) => {
-  res.render('register', {
-    title: 'register',
-    bootstrap: true,
-    users: await queryDb.getUsers(),
-    activeNavReg: true
-})
-})
-
-app.post("/register", urlencodedParser, async (req, res) => {
-    if(!req.body) return res.sendStatus(400);
-    const {firstname, secondname, email, pass} = req.body;
-    res.render('regist-success')
-    await queryDb.setUsers(firstname, 'user', secondname, email, pass);
-});
-
-// add posts
-
-app.post('/createpost', urlencodedParser, async (req, res) => {
-  if(!req.body) return res.sendStatus(400);
-  const {title, post_text} = req.body;
-  await queryDb.setPost(title, post_text, `${req.session.firstName} ${req.session.secondName}`);
-  res.render('post-success', {
-    title: 'Personal area',
-    bootstrap: true,
-    firstname: req.session.firstName,
-    secondname: req.session.secondName,
-    role: req.session.loginStatus,
-    admin: isAdmin(req.session.loginStatus)
-
-  })
-  
-})
-
-app.get('/logout', urlencodedParser, async (req, res) => {
-  if(req.session) {
-    req.session.destroy(() => {
-      res.redirect('/');
-    })
-  } else {
-    res.redirect('/');
-  }
-})
-
+app.get('/logout', routes.logout);
 
 const server = app.listen(process.env.PORT || 8080, () => {
   const port = server.address().port;
