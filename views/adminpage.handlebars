@@ -2,6 +2,10 @@
     {{> navbar}}
 <main class="container main-wrap">
     <h1>Админ панель</h1>
+    <span> <b>    Команды:</b> </span><br>
+    <a href="/admin/generate-random-users" title="Сгенерировать 10 пользователей">Сгенерировать 10 пользователей</a>
+
+    <br><br>
     <p><b>Пользователи сайта</b> </p>
     <ul>
         {{#each users as |user|}}

@@ -60,3 +60,25 @@ module.exports.login = async function login (email, pass) {
   }
   return [];
 }
+
+
+module.exports.setRandomUsers = async function setRandomUsers () {
+  const first_names = ['gleb', 'ivan', 'evgeniy', 'misha', 'oleg', 'john', 'sam', 'ilya', 'alex', 'dima', 'mike', 'garret', 'mark', 'dennis', 'dan', 'harry', 'danila', 'adam', 'vladimir', 'vova'];
+  const second_names = ['kiselev', 'makeev', 'ivanov', 'grigoriev', 'jons', 'doe', 'webb', 'enerson', 'grey', 'black', 'white', 'geyts', 'potter', 'kovalenko', 'durov', 'putin'];
+
+  for (let i = 0; i < 10; i++) {
+    const first_name = Math.floor(Math.random() * first_names.length);
+    const second_name = Math.floor(Math.random() * second_names.length);
+
+
+
+    try {
+      await pool.query(`Insert into users (first_name, role, second_name, email, password) values('${first_names[first_name]}', 'user', '${second_names[second_name]}', '${second_names[second_name]}@example.com', '${first_names[first_name]}${second_names[second_name]}') `)
+     } catch (e) {
+         console.log(`Error in set10RandomUsers(): ${e}`);
+     }
+  }
+
+
+  
+}

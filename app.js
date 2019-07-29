@@ -118,6 +118,17 @@ app.get('/admin', urlencodedParser, async (req, res) => {
   }
 })
 
+app.get('/admin/generate-random-users', urlencodedParser, async (req, res) => {
+
+  if(req.session.loginStatus === 'admin') {
+    await queryDb.setRandomUsers();
+    res.redirect('/admin');
+  } else {
+    res.redirect('/')
+  }
+  
+})
+
 app.get('/add-post', urlencodedParser, async (req, res) => {
   res.render('add-post', {
     title: 'Add post',
