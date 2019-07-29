@@ -59,26 +59,26 @@ app.get('/login', (req, res) => {
 
 app.post("/login", urlencodedParser, async (req, res) => {
   if(!req.body) return res.sendStatus(400);
-  
-  const firstName = req.body.firstname;
-  const secondName = req.body.secondname
+
+  const email = req.body.email;
+  const pass = req.body.pass;
   
   // Проверка в базе данных на существование данного пользователя
-  const loginStatus = await queryDb.login(firstName, secondName);
+  const loginStatus = await queryDb.login(email, pass);
   
-  if (loginStatus === 'admin') {
+  if (loginStatus.role === 'admin') {
     res.send(await queryDb.getUsers());
-  } else if (loginStatus === 'Guest' || loginStatus === 'user') {
-    req.session.firstName = firstName;
-    req.session.secondName = secondName;
-    req.session.loginStatus = loginStatus;
+  } else if (loginStatus.role === 'Guest' || loginStatus.role === 'user') {
+    req.session.firstName = loginStatus.first_name;
+    req.session.secondName = loginStatus.second_name;
+    req.session.loginStatus = loginStatus.role;
 
     res.redirect('/personalarea');
   } else {
     res.render('login' , {
       title: 'Login',
       activeNavLogin: true,
-      message: 'Такого пользователя не существует =( совсем'
+      message: 'Такого пользователя не существует'
     })
   }
 })
@@ -116,9 +116,9 @@ app.get('/register', urlencodedParser, async (req, res) => {
 
 app.post("/register", urlencodedParser, async (req, res) => {
     if(!req.body) return res.sendStatus(400);
-    const {firstname, secondname} = req.body;
+    const {firstname, secondname, email, pass} = req.body;
     res.render('regist-success')
-    await queryDb.setUsers(firstname, 'user', secondname);
+    await queryDb.setUsers(firstname, 'user', secondname, email, pass);
 });
 
 // add posts

@@ -14,9 +14,9 @@ module.exports.getUsers = async function getUsers() {
   return [];
 }
 
-module.exports.setUsers = async function setUsers (first_name, role, second_name) {
+module.exports.setUsers = async function setUsers (first_name, role, second_name, email, pass) {
   try {
-    await pool.query(`Insert into users (first_name, role, second_name) values('${first_name}', '${role}', '${second_name}')`)
+    await pool.query(`Insert into users (first_name, role, second_name, email, password) values('${first_name}', '${role}', '${second_name}', '${email}', '${pass}') `)
     } catch (e) {
       console.log(`Error in setUsers(): ${e}`);
     }
@@ -44,19 +44,15 @@ module.exports.getPosts = async function getPosts() {
 }
 
 
-module.exports.login = async function login (first_name, second_name) {
+module.exports.login = async function login (email, pass) {
   try {
-  const result = await pool.query(`SELECT * from users where first_name = '${first_name}' AND second_name = '${second_name}'`)
+  const result = await pool.query(`SELECT * from users where email = '${email}' AND password = '${pass}'`)
 
-  let statusToString = String(result.rows[0].role).replace(/\s/g, '');
-
-  if( statusToString === 'null') {
-    statusToString = 'Guest';
-  }
+  // console.log (result.rows[0])
 
 
   if (result.rowCount) {
-    return statusToString;
+    return result.rows[0];
   } 
     return 'No';
 
